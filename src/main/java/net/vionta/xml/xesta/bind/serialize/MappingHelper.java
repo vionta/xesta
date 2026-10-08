@@ -26,8 +26,6 @@ public class MappingHelper {
 	 */
 	public static boolean isAttributeMapping( String mappingExpression) {
 		if(mappingExpression == null ||  mappingExpression.isEmpty()) return false;
-//		Pattern pattern = Pattern.compile("\\/@[\\w-]+$|\\/@\\w+:[\\w-]+$");
-//		Pattern pattern = Pattern.compile("@[\\w-]:[\\w-]+\\/@[\\w-]+$|\\/@\\w+:[\\w-]+$");
         Pattern pattern = Pattern.compile("([\\/\\w\\*\\:-]*\\/)?(@[\\w\\*][\\w-]*:?[\\w][\\w-]*[\\w])+$");
 		Matcher matcher = pattern.matcher(mappingExpression);
 		return matcher.find();	
@@ -47,7 +45,6 @@ public class MappingHelper {
 	 */
 	public static boolean isMapped(Serializable parentObject, String propertyName, Mapping mapping) 
 			throws XPathExpressionException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException {
-		Bind annotation = parentObject.getClass().getDeclaredField(propertyName).getAnnotation(Bind.class); 
 		// Check the collection mapping
 		boolean collectionAnnotation = (mapping!=null && mapping.getMappingExpression()!= "" );
 		if(collectionAnnotation) return true;
@@ -57,16 +54,8 @@ public class MappingHelper {
 	}
 
 	/**
-	 * @param parentObject
-	 * @param propertyName
-	 * @return
-	 * @throws XPathExpressionException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
+	 * @param parentObject The class to be checked.
+	 * @return true if the class has a mapping annotation.
 	 * @throws MappingException 
 	 */
 	public static boolean isMappedClass(Serializable parentObject) 
@@ -85,40 +74,6 @@ public class MappingHelper {
 		
 	}
 
-//	/**
-//	 * Returns true if the property is an instance of a considered collection node.
-//	 * @param parentObject
-//	 * @return
-//	 */
-//	public static boolean isSingleCollection(Serializable parentObject, String propertyName) 
-//			throws XPathExpressionException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException {
-//		if(!isCollection(parentObject, propertyName)  || !isMapped(parentObject, propertyName)) return false;
-//		Bind annotation = parentObject.getClass().getDeclaredField(propertyName).getAnnotation(Bind.class); 
-//		if(annotation.classNames() == null || annotation.classNames().length <= 1) return true;
-//		return false;
-//	}
-
-//	/**
-//	 * Returns true if the collection is mapped with the fento annotation. 
-//	 * 
-//	 * @param parentObject
-//	 * @param parentNode
-//	 * @param mappings
-//	 * @param propertyName
-//	 * @return
-//	 * @throws XPathExpressionException
-//	 * @throws InstantiationException
-//	 * @throws IllegalAccessException
-//	 * @throws InvocationTargetException
-//	 * @throws NoSuchMethodException
-//	 * @throws NoSuchFieldException
-//	 * @throws SecurityException
-//	 */
-//	public static boolean isMappedCollection(Serializable parentObject, String propertyName) 
-//			throws XPathExpressionException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException {
-//		return  isCollection(parentObject, propertyName)  && isMapped(parentObject, propertyName);
-//	}
-
 	/**
 	 * Returns true if the property is an instance of a considered collection node.
 	 * @param parentObject
@@ -136,15 +91,4 @@ public class MappingHelper {
 				declaredField.getType().equals(List.class));
 	}
 
-	
-	public static void main(String[] args) {
-//		String mappingExpression = "@office:value-type";
-		String mappingExpression = "@offijce:value-type";
-//		if(mappingExpression == null ||  mappingExpression.isEmpty()) return false;
-//		Pattern pattern = Pattern.compile("(@[\\w-]:[\\w-])+(@[\\w]:[\\w-])+(@[\\w-]:[\\w])");
-		Pattern pattern = Pattern.compile("@[\\w-*]:?[\\w-*]");
-//		Pattern pattern = Pattern.compile("@[\\w-]:[\\w-]+\\/@[\\w-]+$|\\/@\\w+:[\\w-]+$");
-		Matcher matcher = pattern.matcher(mappingExpression);
-		System.out.println( "Ok: "+matcher.find());	
-	}
 }
