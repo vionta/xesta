@@ -7,6 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * A namespace annotation with prefix and uri. 
+ */
 @Retention(RetentionPolicy.RUNTIME)
 //@Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PACKAGE})
@@ -14,7 +17,14 @@ import java.lang.annotation.Target;
 @Repeatable(namespaces.class)
 public @interface namespace {
 
-	public String alias();
-	public String uri();
+	/**
+	 * @return The namespace prefix.
+	 */
+	String alias();
+	
+	/**
+	 * @return The namespace uri declaration.
+	 */
+	String uri();
 	
 }
