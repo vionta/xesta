@@ -4,16 +4,11 @@ import java.util.Map;
 
 import javax.xml.xpath.XPath;
 
+/**
+ * Reference class to initialize the XPath implementations. Current 
+ * version in 3.1 fixed.
+ */
 public class XPathHelper {
-
-	/**
-	 * Returns the default XPath interpreter, a Saxonica 
-	 * www.saxonica.com, based XPath 3.1 implementation.
-	 * @return
-	 */
-	private static XPath getXPath() {
-		return XPathManager.buildXPath();
-	}
 
 	/**
 	 * Returns the default XPath interpreter, a Saxonica 
