@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.w3c.dom.Document;
 
-import net.vionta.xml.xesta.bind.analyze.map.ObjectDocumentMapping;
+import net.vionta.xml.xesta.bind.analyze.map.Mapping;
 
 public class Merge {
 
@@ -14,7 +14,7 @@ public class Merge {
 	}
 	
 	public Document serialize(Serializable serializable) {
-		ObjectDocumentMapping mapping =null; //TODO
+		Mapping mapping =null; //TODO
 		return null;
 		
 	}
