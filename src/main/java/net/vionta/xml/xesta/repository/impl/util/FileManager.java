@@ -28,6 +28,9 @@ import org.slf4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+/**
+ * A basic file access implementation.
+ */
 public class FileManager {
 	
 	static Logger LOGGER = getLogger(FileManager.class);
@@ -80,10 +83,21 @@ public class FileManager {
     }
     
     
+    /**
+     * Reads a file from a path and returns a Xml document as a result.
+     * @param path the file path
+     * @return The Xml document object.
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public static Document readDocument(String path) throws IOException, SAXException, ParserConfigurationException {
     	LOGGER.info("Reading documment "+path);
     	File xmlFile = new File(path);
-//    	String fileContents = readFile(xmlFile.getPath());
+    	if(!xmlFile.exists()) {
+    		LOGGER.error("File "+path+" could not be found. It can not be read or parsed.");
+        		throw new IOException("File "+path+" could not be found. It can not be read or parsed.");
+    	}
 	    // Create a DocumentBuilder
 	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -93,6 +107,15 @@ public class FileManager {
 	    return document;
     }
     
+    /**
+     * Reads a file and returns the text content.
+     * 
+     * @param path The file path.
+     * @return The text content of the file.
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public static String readFile(String path) throws IOException, SAXException, ParserConfigurationException {
     	LOGGER.debug("Reading file "+path);
 	    Path filePath = FileSystems.getDefault().getPath(".", path);	
@@ -102,7 +125,6 @@ public class FileManager {
     	String contents = ""; 
 		try {
 			inputStream = Files.newInputStream(filePath);
-//			inputStream = Files.newInputStream(newFile);
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
