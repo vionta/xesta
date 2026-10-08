@@ -3,14 +3,11 @@ package net.vionta.xml.xesta.bind.serialize;
 import static net.vionta.xml.xesta.bind.serialize.MappingHelper.isAttributeMapping;
 import static net.vionta.xml.xesta.bind.serialize.util.XPathHelper.getXPath;
 
-import java.awt.List;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -18,15 +15,12 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import net.vionta.xml.xesta.bind.analyze.BindMapExtractor;
 import net.vionta.xml.xesta.bind.analyze.map.Mapping;
-import net.vionta.xml.xesta.bind.analyze.map.ObjectDocumentMapping;
 import net.vionta.xml.xesta.bind.annotation.SerializingMode;
 import net.vionta.xml.xesta.bind.serialize.util.DeserializerHelper;
 import net.vionta.xml.xesta.exception.BindingException;
@@ -60,7 +54,7 @@ public class Serializer {
 		 */
 		public Document serialize(Serializable mainObject, Document document) throws MappingException, BindingException, XPathExpressionException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException, ClassNotFoundException, PersistException {
 			log.info("Serialzing Document  "+document);
-			ObjectDocumentMapping mapping = BindMapExtractor.analyze(mainObject);
+			Mapping mapping = BindMapExtractor.analyze(mainObject);
 			log.info("With Mapping "+mapping);
 			String mainMappingExpression = mapping.getMappingExpression();
 			log.debug(" Mapping Expresion "+mainMappingExpression);
@@ -119,7 +113,6 @@ public class Serializer {
 								getXPath(currentMapping.getNamespaces()).evaluate(mappingExpression, mainNode,XPathConstants.NODE);
 						log.info(" Setting value: "+ nestedProperty.toString());
 						if(attributeNode!=null) attributeNode.setNodeValue(nestedProperty.toString());
-//						((Attr)attributeNode).setValue(nestedProperty.toString());
 						//TODO: Contemplar crear nodos si no existen
 					} else if ((parentObject.getClass().getDeclaredField(propertyName).getClass().equals(String.class)))  {
 						log.info(" Setting attribute: "+ propertyName);
@@ -135,34 +128,18 @@ public class Serializer {
 						attributeNode.setNodeValue(nestedProperty.toString());
 				//TODO:Ver el tipo de nodo y el tipo de resultado. 
 				
-//			}	else if( parentObject.getClass().getDeclaredField(propertyName).getClass().equals(Vector.class) || 
-//					parentObject.getClass().getDeclaredField(propertyName).getClass().equals(ArrayList.class) ||
-//					parentObject.getClass().getDeclaredField(propertyName).getClass().equals(List.class)) {
-//			
-//				throw new IllegalStateException("This should not be used, code duplicate (probably)		");
-//				log.info(" Getting List: "+ propertyName);
-//		
-////				PropertyUtils.setNestedProperty(appender,appenderNameMapping.getPropertyName(), appenderName);
-//				NodeList nodeList = (NodeList) getXPath().evaluate(mappingExpression, mainNode,XPathConstants.NODESET);
-//				//TODO: Falta por hacer el binding de listas
-//				
 			} 	else {
 				// Nos queda el nodo single
 				log.debug(" Trying to serialize single node for "+ propertyName);
 				
 				Serializable candidateObject ;
 				try {
-//					Object nestedProperty = PropertyUtils.getNestedProperty(parentObject, propertyName);
 					candidateObject = (Serializable) PropertyUtils.getNestedProperty( parentObject,propertyName);
 					log.debug(" Gotten value : "+ candidateObject);
 					
-//					if(singelObject==null ) singelObject = (Serializable) Deserialzer.getObjectInstance( currentMapping.getPropertyClass());
 					Node currentNode = (Node) getXPath(currentMapping.getNamespaces()).evaluate(mappingExpression, mainNode, XPathConstants.NODE);
 					if(candidateObject!=null) {
 						if (currentNode!=null)
-//							if ( MappingHelper.isMappedClass(candidateObject)
-//							|| ( currentMapping.getMappings() != null
-//							l && currentMapping.getMappings().size() > 0)) serializeSubproperties(candidateObject, currentNode, currentMapping.getMappings(), document);
 						if ( MappingHelper.isMappedClass(candidateObject)
 						|| ( currentMapping.getMappings() != null && currentMapping.getMappings().size() > 0)) serializeSubproperties(candidateObject, currentNode, currentMapping.getMappings(), document);
 
@@ -202,7 +179,6 @@ public class Serializer {
 									
 						}
 					}
-					
 				} catch (Exception e) {
 					log.error("Could not set "+ propertyName+" property on "+parentObject );
 					MappingException mappingException = new MappingException();
@@ -212,20 +188,16 @@ public class Serializer {
 					log.error(mappingExpression);
 					throw mappingException;
 				}
-				
-				
 			}
-			
 		}
 		return document;
 	}
-
 
 	protected String getTextRepresentation(Serializable parentObject, String propertyName)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Object nestedProperty = PropertyUtils.getNestedProperty( parentObject,propertyName);
 		String propertyRepresentation = (nestedProperty!=null) ? nestedProperty.toString() : "" ;  
-		if(nestedProperty instanceof java.util.Date && nestedProperty!=null)  {
+		if(nestedProperty instanceof Date && nestedProperty!=null)  {
 			//TODO: Add date format to object bind
 		       SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 		       propertyRepresentation = dateFormatter.format((Date)nestedProperty);
