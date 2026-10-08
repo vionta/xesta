@@ -26,7 +26,7 @@ public class DocumentUtils {
 	 * Extracts a W3C document to a String.
 	 * 
 	 * @param document
-	 * @return
+	 * @return The text representation of the document.
 	 * @throws TransformerException
 	 */
 	public static String convert(Document document) throws TransformerException {
@@ -36,8 +36,8 @@ public class DocumentUtils {
 	/**
 	 * Extracts a W3C document to a String.
 	 * 
-	 * @param document
-	 * @return
+	 * @param document the xml document object to be converted.
+	 * @return The text representation of the document.
 	 * @throws TransformerException
 	 */
 	public static String documentToString(Document document) throws TransformerException {
@@ -52,26 +52,26 @@ public class DocumentUtils {
 	/**
 	 * Return a document from the xml contents.
 	 * 
-	 * @param content
-	 * @return
+	 * @param content The text representation of the document.
+	 * @return A document extracted from the string content of the file.
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
 	public static Document stringToDocument(String content) throws ParserConfigurationException, SAXException, IOException {
-    // Create a DocumentBuilder
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    // Parse the XML file
-    Document document = builder.parse(new InputSource(new StringReader(content)));
-    return document;
+	    // Create a DocumentBuilder
+	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+	    DocumentBuilder builder = factory.newDocumentBuilder();
+	    // Parse the XML file
+	    Document document = builder.parse(new InputSource(new StringReader(content)));
+	    return document;
 	}	
 	/**
 	 * Return a document from the xml contents.
 	 * 
-	 * @param content
-	 * @return
+	 * @param content The text representation of the document.
+	 * @return A document extracted from the string content of the file.
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
