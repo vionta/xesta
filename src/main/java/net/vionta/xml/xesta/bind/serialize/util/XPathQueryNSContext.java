@@ -1,14 +1,11 @@
 package net.vionta.xml.xesta.bind.serialize.util;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.namespace.NamespaceContext;
-
-import net.vionta.xml.xesta.bind.serialize.CollectionItem;
 
 /**
  * Namespace interface implementation to pass namespaces and 
@@ -21,11 +18,19 @@ public class XPathQueryNSContext implements NamespaceContext {
      */
     private Map<String, String> namespaces = new HashMap<String, String>();
 
+	/**
+	 * Returns the namespace related to the 
+	 * supplied prefix.
+	 */
 	@Override
 	public String getNamespaceURI(String prefix) {
 		return namespaces.get(prefix);
 	}
 
+	/**
+	 * Returns the prefix related to the namespace 
+	 * URI or IRI.
+	 */
 	@Override
 	public String getPrefix(String namespaceURI) {
 		for(Entry<String, String> entry : namespaces.entrySet()) {
@@ -34,6 +39,10 @@ public class XPathQueryNSContext implements NamespaceContext {
 		return null;
 	}
 
+	/**
+	 * Returns the prefix iterartor related to the namespace 
+	 * URI or IRI.
+	 */
 	@Override
 	public Iterator<String> getPrefixes(String namespaceURI) {
 		return namespaces.keySet().iterator();
@@ -48,6 +57,10 @@ public class XPathQueryNSContext implements NamespaceContext {
 		return namespaces;
 	}
 
+	/**
+	 * Sets the namespaces of the context.
+	 * @param namespaces
+	 */
 	public void setNamespaces(Map<String, String> namespaces) {
 		this.namespaces = namespaces;
 	}
