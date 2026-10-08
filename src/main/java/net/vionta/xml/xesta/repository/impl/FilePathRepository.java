@@ -12,18 +12,32 @@ import net.vionta.xml.xesta.bind.serialize.Serializer;
 import net.vionta.xml.xesta.repository.DocumentRepository;
 import net.vionta.xml.xesta.repository.exception.PersistException;
 import net.vionta.xml.xesta.repository.exception.RetrieveException;
-import net.vionta.xml.xesta.repository.impl.util.ClasspathFileUtil;
 import net.vionta.xml.xesta.repository.impl.util.DocumentUtils;
 import net.vionta.xml.xesta.repository.impl.util.FileManager;
 import net.vionta.xml.xesta.repository.impl.util.PathAdjust;
 
+/**
+ * A simple file path utility class that eases the access to 
+ * the files. 
+ */
 public class FilePathRepository implements DocumentRepository {
 
 	static Logger log  = getLogger(FilePathRepository.class);
 
-	private String path = "" ; 
+	/**
+	 * The file part path of the repository (may be adjusted with 
+	 * the object properties).
+	 */
+	private String path = "" ;
+	
+	/**
+	 * The base path of the repository, It is not adjusted.
+	 */
 	private String basePath = "" ; 
 	
+	/**
+	 * An optional document template.
+	 */
 	private Document template; 
 
 	public FilePathRepository(String path) {
@@ -31,6 +45,7 @@ public class FilePathRepository implements DocumentRepository {
 		if (path == null) throw new IllegalStateException("The paths can not be null");
 		this.path = path;
 	}
+
 
 	@Override
 	public void persist(Serializable object, Document document) throws PersistException {
@@ -104,6 +119,11 @@ public class FilePathRepository implements DocumentRepository {
 		}
 	}
 
+	/**
+	 * A method that persist an object based on the document template content.  
+	 * @param object The value object data.
+	 * @throws PersistException
+	 */
 	public void persistFromTemplate(Serializable object) throws PersistException {
 		try {
 			// Calculate Path.
@@ -111,9 +131,6 @@ public class FilePathRepository implements DocumentRepository {
 			// Load 
 			log .debug(" Adjusted Path"+adjustedPath );
 
-//			String fileContent = FileManager.readFile(adjustedPath);
-//			log .debug("File Content:"+fileContent);
-//			Document documentContents = DocumentUtils.stringToDocument(fileContent);
 			Document serializedDocument = new Serializer().serialize(object, template);
 			FileManager.writeFile(adjustedPath, DocumentUtils.documentToString(serializedDocument));
 		} catch (Exception e) {
@@ -132,7 +149,6 @@ public class FilePathRepository implements DocumentRepository {
 	public void remove(Serializable object) throws RetrieveException {
 		throw new IllegalStateException("This method has not yet been implemented.");
 	}
-
 
 	public String getFullPath() {
 		return basePath + path;
@@ -161,8 +177,5 @@ public class FilePathRepository implements DocumentRepository {
 	public void setTemplate(Document template) {
 		this.template = template;
 	}
-
-
-
 
 }
