@@ -9,6 +9,23 @@ import java.util.Arrays;
  */
 public class Mapping extends BaseMapping {
 
+	//Should be used only on root classes
+	/**
+	 * Default constructor with an xpath parameter 
+	 * expression.
+	 * @param mappingExpression
+	 */
+	public Mapping(String mappingExpression) {
+		this.mappingExpression = mappingExpression;
+	}
+	
+	/**
+	 * A constructor with a Java property name and 
+	 * an Xpath expression.
+	 * @param propertyName The name of the java property.
+	 * @param mappingExpression The Xpath expression of the mapping
+	 * to the element/s.
+	 */ 
 	public Mapping(String propertyName, String mappingExpression) {
 		super();
 		this.propertyName = propertyName;
@@ -22,6 +39,12 @@ public class Mapping extends BaseMapping {
 		this.mappings = mappings;
 	}
 
+	public Mapping(Class elementClass, String mappingExpression) {
+		super();
+		this.propertyClass = elementClass;
+		this.mappingExpression = mappingExpression;
+	}
+	
 	public Mapping(ArrayList<Mapping> mappings) {
 		super();
 		this.mappings = mappings;
@@ -30,12 +53,12 @@ public class Mapping extends BaseMapping {
 	@Override
 	public String toString() {
 		return "Mapping "
-				+ "\n [property : " + propertyName + " -> Exp : " + mappingExpression + ", (key: " + key
-				+ " - \n namespaces=" + namespaces + " \n  propertyClass=" + propertyClass + ", classes=" + collectionClasses + ", isMultilple="
+				+ "\n [property : " + propertyName + " -> Exp : " + mappingExpression + ", \n (key: " + key
+				+ " - namespaces=" + namespaces + " \n  propertyClass=" + propertyClass + ", classes=" + collectionClasses + ", isMultilple="
 				+ isMultilple + ", propertyFormatter=" + propertyFormatter +" value="
-				+ value + ", Modes ser (" + serializeMode + ")  deser(" + deserializeMode
+				+ value + ", \n :: Mode ser (" + serializeMode + ")  deser(" + deserializeMode
 				+ ")  bind(" + collectionBindStrategy + ") del("
-				+ collectionDeleteUnmatched + ") + \n  mappings=" + mappings + ", ]";
+				+ collectionDeleteUnmatched + ") + \n  - - mappings=" + mappings + ", ]";
 	}
 
 }
