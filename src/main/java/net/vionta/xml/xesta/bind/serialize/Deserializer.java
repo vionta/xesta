@@ -4,15 +4,12 @@ package net.vionta.xml.xesta.bind.serialize;
 import static net.vionta.xml.xesta.bind.serialize.MappingHelper.isAttributeMapping;
 import static net.vionta.xml.xesta.bind.serialize.util.XPathHelper.getXPath;
 
-import java.awt.List;
 import java.io.Serializable;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Vector;
 
-import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -22,15 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import net.vionta.xml.xesta.bind.analyze.BindMapExtractor;
 import net.vionta.xml.xesta.bind.analyze.map.Mapping;
-import net.vionta.xml.xesta.bind.analyze.map.ObjectDocumentMapping;
 import net.vionta.xml.xesta.bind.serialize.util.DeserializerHelper;
 import net.vionta.xml.xesta.exception.BindingException;
 import net.vionta.xml.xesta.exception.MappingException;
-import net.vionta.xml.xesta.repository.impl.util.DocumentUtils;
 
 /**
  * Main class that takes the document information and 
@@ -41,9 +35,14 @@ public class Deserializer {
 	private static Logger log = LoggerFactory.getLogger(Deserializer.class);
 	
 	/**
-	 * @param mainObject
-	 * @param document
-	 * @return The object that 
+	 * Deserialzes an Xml document and returns it as a java object. The mapping 
+	 * information is taken from the pojos.
+	 * 
+	 * @param mainObject The java object that will be populated with the info
+	 * 					 and used as reference for the mapping information.
+	 * @param document The document, existing or a supplied template.
+	 * @return The object with the populated information.
+	 * 
 	 * @throws MappingException
 	 * @throws BindingException
 	 * @throws ClassNotFoundException 
@@ -56,11 +55,31 @@ public class Deserializer {
 	 * @throws IllegalAccessException 
 	 */
 	public <T extends Serializable> T deserialize(T mainObject, Document document) throws MappingException, BindingException, ClassNotFoundException, XPathExpressionException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException, InstantiationException {
-		ObjectDocumentMapping mapping = BindMapExtractor.analyze(mainObject);
+		Mapping mapping = BindMapExtractor.analyze(mainObject);
 		return (T) deserialize(mapping, document);
 	}
 	
-	public Object deserialize(ObjectDocumentMapping mapping, Document document) throws  MappingException, BindingException, XPathExpressionException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException, InstantiationException {
+	/**
+	 * Deserialzes an Xml document and returns it as a java object. The mapping 
+	 * information is taken from the pojos.
+	 * 
+	 * @param mainObject The java object that will be populated with the info
+	 * 					 and used as reference for the mapping information.
+	 * @param document The document, existing or a supplied template.
+	 * @return The object with the populated information.
+	 * 
+	 * @throws MappingException
+	 * @throws BindingException
+	 * @throws ClassNotFoundException 
+	 * @throws XPathExpressionException 
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 */
+	public Object deserialize(Mapping mapping, Document document) throws  MappingException, BindingException, XPathExpressionException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException, InstantiationException {
 
 		log.info("Deserialzing Document  "+document);
 		log.info("With Mapping:  "+mapping);
@@ -81,7 +100,24 @@ public class Deserializer {
 	}
 
 	
-	protected <T extends Serializable> T deserializeSubproperties(T parentObject, Node mainNode, ArrayList<Mapping> mappings) throws  MappingException, 
+	/**
+	 * Iterative method to deserialize object subproperties with the information from the document node. 
+	 * @param <T> The object type.
+	 * @param parentObject The parent object.
+	 * @param mainNode The main node that we will take as root for the collection.
+	 * @param mapping The mapping information.
+	 * @return The serialized object. 
+	 * @throws MappingException
+	 * @throws BindingException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws XPathExpressionException
+	 * @throws InstantiationException
+	 */
+	protected <T extends Serializable> T deserializeSubproperties(T parentObject, Node mainNode, ArrayList<Mapping> mapping) throws  MappingException, 
 		BindingException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, SecurityException, XPathExpressionException, InstantiationException {
 			
 		log.info(" Subproperties : "+ mainNode+ " Into "+parentObject);
@@ -89,7 +125,7 @@ public class Deserializer {
 		log.debug(" Parent Object Class: "+ parentObject.getClass().getName());
 		log.debug(" Iterating overr subproperties : ------------------------------------- ");
 		
-		for(Mapping currentMapping : mappings) {
+		for(Mapping currentMapping : mapping) {
 			 
 			log.info(" Subproperty evaluated to : "+ currentMapping.getMappingExpression() +" -> "+currentMapping.getPropertyName());
 			String mappingExpression = currentMapping.getMappingExpression();
@@ -100,8 +136,8 @@ public class Deserializer {
 			
 			// ... Deserialize collection .................
 			if (CollectionDeserializeHelper.isCollection(parentObject, propertyName))  {
-				Serializable deserializedCollection = CollectionDeserializeHelper.deserializeCollection(parentObject, mainNode, currentMapping, propertyName);
-				PropertyUtils.setNestedProperty(parentObject, propertyName, deserializedCollection);	
+					Serializable deserializedCollection = CollectionDeserializeHelper.deserializeCollection(parentObject, mainNode, currentMapping, propertyName);
+					PropertyUtils.setNestedProperty(parentObject, propertyName, deserializedCollection);	
 			} 
 			// ... Deserialize Attribute .............
 			else if(isAttributeMapping(mappingExpression) || (parentObject.getClass().getDeclaredField(propertyName).getClass().equals(String.class)))  {
@@ -126,7 +162,7 @@ public class Deserializer {
 							log.debug(" Candidate Object is null, getting instance of   "+currentMapping.getPropertyClass());
 							singleObject = (Serializable) DeserializerHelper.getObjectInstance( currentMapping.getPropertyClass());
 						}
-						if(currentMapping.getPropertyClass()!=null && !currentMapping.getPropertyClass().equals(java.lang.String.class)) {
+						if(currentMapping.getPropertyClass()!=null && !currentMapping.getPropertyClass().equals(String.class)) {
 							Serializable deserializeSubproperties = (Serializable) deserializeSubproperties(singleObject, currentNode, currentMapping.getMappings());
 							log.debug(" Candidate Object is null, getting instance of   "+currentMapping.getPropertyClass());
 							PropertyUtils.setNestedProperty(parentObject, propertyName, deserializeSubproperties);
@@ -147,6 +183,21 @@ public class Deserializer {
 		return parentObject;
 	}
 
+	/**
+	 * Utility method to deserialize numeric nodes.
+	 * @param <T> The object type.
+	 * @param parentObject The java object that contains the actual property.
+	 * @param mainNode The main node to be taken as root for the operation.
+	 * 
+	 * @param currentMapping
+	 * @param mappingExpression
+	 * @param propertyName
+	 * @throws XPathExpressionException
+	 * @throws BindingException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 */
 	private <T extends Serializable> void deserializeNumericType(T parentObject, Node mainNode, Mapping currentMapping,
 			String mappingExpression, String propertyName) throws XPathExpressionException, BindingException,
 			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -174,6 +225,20 @@ public class Deserializer {
 					annotatedType.toString().equals("java.lang.Byte"));
 	}
 
+	/**
+	 * Deserializes a Xml attribute into a java property.
+	 * 
+	 * @param parentObject The parent object that will hold the property.
+	 * @param mainNode The root node from the xml file to be taken as reference.
+	 * @param mappingExpression The XPath mapping expression.
+	 * @param propertyName name of the java property.
+	 * @param mapping The mapping information object.
+	 * 
+	 * @throws XPathExpressionException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 */
 	private void deserializeAttribute(Serializable parentObject, Node mainNode, String mappingExpression,
 			String propertyName, Mapping mapping)
 			throws XPathExpressionException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -184,6 +249,15 @@ public class Deserializer {
 		}
 	}
 
+	/**
+	 * Utility method to populate the value of the java node from a text representation.
+	 * @param parentObject The java object that holds the property being treated.
+	 * @param propertyName The name of the java property.
+	 * @param attributeValue The text value of the Xml attribute.
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 */
 	private void setValue(Serializable parentObject, String propertyName, String attributeValue)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		try {
@@ -207,15 +281,19 @@ public class Deserializer {
 		
 	}
 
+	/**
+	 * Gets the text literal value from the xpath query on the supplied node.
+	 * @param mainNode 
+	 * @param mappingExpression
+	 * @param mapping
+	 * @return The text value of the queried text node.
+	 * @throws XPathExpressionException
+	 */
 	private String extractLiteralValue(Node mainNode, String mappingExpression, Mapping mapping)
 			throws XPathExpressionException {
 		XPath xPath = getXPath(mapping.getNamespaces());
-//		if(mapping.getNamespaces()!= null ) xPath.setNamespaceContext( DeserializerHelper.extractNamespacesContext(mapping.getNamespaces()));
 		String attributeValue= (String) xPath.evaluate(mappingExpression, mainNode,XPathConstants.STRING);
 		return attributeValue;
 	}
-	
-
-
 
 }
