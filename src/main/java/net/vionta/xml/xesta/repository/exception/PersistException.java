@@ -6,8 +6,19 @@ package net.vionta.xml.xesta.repository.exception;
  */
 public class PersistException extends Exception {
 
+	/**
+	 * The provided node element path.
+	 */
 	protected String path;
+	
+	/**
+	 * The current object name, during the exception.
+	 */
 	protected String objectName;
+	
+	/**
+	 * The original source of error.
+	 */
 	protected Exception sourceExpeption;
 	
 	public PersistException() {}
