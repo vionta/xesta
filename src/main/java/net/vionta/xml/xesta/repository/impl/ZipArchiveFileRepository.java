@@ -17,6 +17,12 @@ import net.vionta.xml.xesta.repository.impl.util.DocumentUtils;
 import net.vionta.xml.xesta.repository.impl.util.PathAdjust;
 import net.vionta.xml.xesta.repository.impl.util.ZipFileUtil;
 
+/**
+ * A specific repository that takes the documents from and to 
+ * inside zip filesets. Zip filesets are a common way to wrap 
+ * information in specific program files, office like MS xml, 
+ * open document, etc.
+ */
 public class ZipArchiveFileRepository implements DocumentRepository {
 
 	static Logger log  = getLogger(ZipArchiveFileRepository.class);
@@ -52,7 +58,7 @@ public class ZipArchiveFileRepository implements DocumentRepository {
 			re.setPath( fileNamePattern);
 			re.setSourceExpeption(e);
 			e.printStackTrace();
-			log .error("Error retrieving object from Http repository");
+			log .error("Error retrieving object from Zip repository");
 			log .error(re.toString());
 			throw re;
 		}
@@ -77,6 +83,9 @@ public class ZipArchiveFileRepository implements DocumentRepository {
 		}
 	}
 
+	/**
+	 * A specific method that persist the object into the zipped xml file.
+	 */
 	public void persist(Serializable object) throws PersistException {
 		try {
 			String readTextFileInZip = ZipFileUtil.readTextFileInZip(zipFilePattern, fileNamePattern); 
