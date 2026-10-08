@@ -2,16 +2,13 @@ package net.vionta.xml.xesta.repository.impl.util;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -33,16 +30,15 @@ public class ClasspathFileUtil {
 	 /**
      * Checks if a file exists in the defined path.
      *
-     * @param path
-     * @return
-	 * @throws URISyntaxException 
+     * @param path The path to be checked.
+     * @return true if the file exists.
      */
     public static boolean fileExists(String path)  {
     	log.debug("Checking Path "+path);
     	try {
-    	URL url = ResourceLoader.class.getClassLoader().getResource(path); 
-    	File file = new File(url.getPath());
-    	return new File(path).exists();
+    		URL url = ResourceLoader.class.getClassLoader()
+    										.getResource(path); 
+    		return new File(path).exists();
     	} catch (Exception e) {
     		log.error("File  "+path+ " does not exist in classpath ");
     		log.debug(e.getCause() +" - "+ e.getMessage() );
@@ -51,16 +47,19 @@ public class ClasspathFileUtil {
     }
 
     /**
-     * Reads a file from the classpath entries
+     * Reads a file from the classpath entries.
      * 
      * @param path
-     * @return
+     * @return The content of the read file.
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
      * @throws URISyntaxException
      */
-    public static String readFile(String path) throws IOException, SAXException, ParserConfigurationException, URISyntaxException  {
+    public static String readFile(String path) 
+    							throws IOException, SAXException, 
+    										ParserConfigurationException, 
+    										URISyntaxException  {
     	log.debug("Reading file "+path);
     	ClassLoader classLoader = ResourceLoader.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(path);
@@ -68,12 +67,11 @@ public class ClasspathFileUtil {
         byte[] resourceBytes = inputStream.readAllBytes();
         inputStream.close();
         // Convert the byte array to a String and print it
-        String resourceString = new String(resourceBytes, StandardCharsets.UTF_8);
-//        log.debug(" Returning:"+resourceString);
-//        log.debug(" ? > "+resourceString.indexOf("?"));        	
+        String resourceString = new String(resourceBytes, 
+        													StandardCharsets.UTF_8);
         if(resourceString.indexOf("<")==1) {
-//        	log.debug(" ? TRUE ");        	
-        	resourceString = resourceString.substring(resourceString.indexOf("<"));
+        	resourceString = resourceString.substring(
+        															resourceString.indexOf("<"));
         	log.debug(" TRUE : "+resourceString.substring(0,20));        	
         }
         log.debug(" Returning:"+resourceString);
@@ -90,7 +88,9 @@ public class ClasspathFileUtil {
      * @param contents File contents.
      * @throws IOException Write file exception (permissions, etc.).
      */
-    public static void writeFile(String path, String contents) throws IOException, URISyntaxException  {
+    public static void writeFile(String path, String contents) 
+    										throws IOException, URISyntaxException  {
+    	
     	log.debug("Writng File "+path);
     	
     	URL url = ResourceLoader.class.getClassLoader().getResource(path);
@@ -103,6 +103,11 @@ public class ClasspathFileUtil {
     	writer.close();
     }
 
+	/**
+	 * Remove parts of the file name that may refer to the jar file.
+	 * @param fileName The file name.
+	 * @return The sanitized file name without internal java references.
+	 */
 	public static String saniticeFileName(String fileName) {
 		String sanitizedString  =fileName;
 		if(fileName.contains(".jar!\\") && fileName.split(".jar!").length>1) {
