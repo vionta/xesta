@@ -2,10 +2,48 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.vionta.xml</groupId>
   <artifactId>xesta</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
+
+  <packaging>jar</packaging>
+  <name>Xesta Xml Java Binding</name>
+
+  <description>An Xml / Java Binding library with Xml practices in mind. Xesta uses modern XPath (3.1)
+	  for element location, allowing upward and downward paths, filtering, and navigation based on related 
+	  elements. Xesta preserves the preexisting document structure acting only on the significative elements. 
+  </description>
+  <url>http://www.vionta.net/community/xesta</url>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License v3.0</name>
+      <url>https://github.com/vionta/xesta/blob/main/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>jorgesanchez</id>
+      <name>Jorge Sanchez</name>
+      <url>http://www.vionta.net</url>
+      <organization>Vionta.net</organization>
+      <organizationUrl>http://www.vionta.net</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <scm>
+	<connection>scm:git:git://github.com/vionta/xesta.git</connection>
+  	<developerConnection>scm:git:ssh://github.com/vionta/xesta.git</developerConnection>
+  	<url>http://github.com/vionta/xesta</url>
+  </scm>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.generatePom>true</project.build.generatePom>
+    <generatePom>true</generatePom>
   </properties>
   
   <dependencies>
@@ -22,37 +60,90 @@
     </dependency>     
     
     <dependency>
-    <groupId>commons-beanutils</groupId>
-    <artifactId>commons-beanutils</artifactId>
-    <version>1.11.0</version>
-	</dependency>
-
-	<dependency>
-   	<groupId>junit</groupId>
-    <artifactId>junit</artifactId>
-    <version>4.13.2</version>
-    <scope>test</scope>
-	</dependency>
-
-	<!-- https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE -->
-	<dependency>
-	    <groupId>net.sf.saxon</groupId>
-	    <artifactId>Saxon-HE</artifactId>
-	    <version>12.9</version>
-	</dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.11.0</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE -->
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>12.9</version>
+    </dependency>
   </dependencies>
+
   <build>
-	  <plugins>  
-	  	<plugin>
+    <plugins>  
+      <plugin>
     	<groupId>org.apache.maven.plugins</groupId>
     	<artifactId>maven-compiler-plugin</artifactId>
     	<version>3.12.1</version>
     	<configuration>
-        	<release>17</release> <!-- the final compiled version -->
+          <release>17</release> <!-- the final compiled version -->
     	</configuration>
-	</plugin>
-	</plugins>
-	</build>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>attach-docs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.8</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+     </plugin>
+     <plugin>
+      <groupId>io.github.mavenplugins</groupId>
+      <artifactId>central-publishing-maven-plugin</artifactId>
+      <version>1.3.1</version>
+      <extensions>true</extensions>
+      <configuration>
+        <publishingServerId>central</publishingServerId>
+      </configuration>
+    </plugin>
+    
+    </plugins>
+  </build>
 
 
 </project>
