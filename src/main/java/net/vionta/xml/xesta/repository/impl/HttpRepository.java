@@ -16,6 +16,10 @@ import net.vionta.xml.xesta.repository.impl.util.DocumentUtils;
 import net.vionta.xml.xesta.repository.impl.util.HttpUtil;
 import net.vionta.xml.xesta.repository.impl.util.PathAdjust;
 
+/**
+ * A method that persist the object to an Http file repository
+ * using common Http POST/GET methods.
+ */
 public class HttpRepository implements DocumentRepository {
 
 	static Logger log = getLogger(HttpRepository.class);
