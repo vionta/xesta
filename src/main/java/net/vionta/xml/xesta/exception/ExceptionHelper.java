@@ -3,10 +3,6 @@ package net.vionta.xml.xesta.exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.vionta.xml.xesta.bind.analyze.BindMapExtractor;
-import net.vionta.xml.xesta.bind.analyze.map.Mapping;
-import net.vionta.xml.xesta.bind.annotation.Bind;
-
 /**
  * Exception creation helper 
  */
@@ -16,10 +12,11 @@ public class ExceptionHelper {
 
 	/**
 	 * Creates and launches the mapping exception. 
-	 * @param mainClazz
-	 * @param mainBindAnnotation
-	 * @param mapping
-	 * @param z
+	 *
+	 * @param mainClassName
+	 * @param targetClassName
+	 * @param targetPropertyName
+	 * @param mappingExpression
 	 * @param e
 	 * @param logMessage
 	 * @throws MappingException
@@ -33,7 +30,7 @@ public class ExceptionHelper {
 		me.setMappingExpression(mappingExpression);
 		me.setTargetPropertyName("classNames");
 		me.setTargetClassName(targetClassName);
-		e.printStackTrace();
+		if(e!=null)e.printStackTrace();
 		log.error(logMessage);
 		throw me;
 	}
