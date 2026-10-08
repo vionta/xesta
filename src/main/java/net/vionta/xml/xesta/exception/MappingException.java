@@ -4,6 +4,7 @@ package net.vionta.xml.xesta.exception;
  * An exception thrown during the mapping process.
  */
 public class MappingException extends BindingException {
+	
 	public MappingException() {}
 	public MappingException(String message) { 
 		this.setValue(message);
