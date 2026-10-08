@@ -1,8 +1,20 @@
 package net.vionta.xml.xesta.bind.analyze.map;
 
+/**
+ *  Class to be used as an annotation help, to declare the 
+ *  namespaces.
+ */
 public class Namespace {
 
+	/**
+	 * The namespace declaration alias.
+	 */
 	String alias;
+	
+	/**
+	 * The namespace uri or iri to identify the 
+	 * namespace.
+	 */
 	String uri;
 	
 	public Namespace(String alias, String uri) {
