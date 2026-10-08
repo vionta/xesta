@@ -24,6 +24,14 @@ public class PathAdjust {
 	 */
 	public static final String END_PROPERTY_MARKER="}";
 	
+	/**
+	 * Adjusts a path with the properties from the internal 
+	 * objects.
+	 * @param path the provided file path.
+	 * @param vo The object from where the properties are 
+	 * 			 taken. 
+	 * @return the adjusted path.
+	 */
 	public static String adjustedPath(String path, Serializable vo) {
 		String workPath = path;
 		while(isAdjustable(workPath)) {
@@ -32,6 +40,11 @@ public class PathAdjust {
 		return workPath;
 	}
 
+	/**
+	 * Checks if the path have place holders for adjustment.
+	 * @param path the file path.
+	 * @return true if the path can/should be adjusted.
+	 */
 	private static boolean isAdjustable(String path) {
 		if(path == null) return false; 
 		int paramStart = path.indexOf(START_PROPERTY_MARKER);
@@ -41,6 +54,15 @@ public class PathAdjust {
 		return true;
 	}
 
+	/**
+	 * Adjusts the path. Takes the object properties and updates the marked 
+	 * placeholders to adjust the path.
+	 * 
+	 * @param path The file path.
+	 * @param vo The pojo or value object.
+	 * @return The adjusted file path.
+	 * @throws IllegalStateException
+	 */
 	public static String adjustPath(final String path, final Serializable vo) throws IllegalStateException {
 		int paramNameStartPosition = path.indexOf(START_PROPERTY_MARKER);
 		String paramName = path.substring(paramNameStartPosition + 1, +paramNameStartPosition + 
@@ -64,19 +86,5 @@ public class PathAdjust {
 		String resultingPath = path.replaceAll("\\"+START_PROPERTY_MARKER+paramName+"\\"+END_PROPERTY_MARKER, paramValue );
 		return resultingPath ;
 	}
-	
-	private static String detectParamName(String path) {
-		//Take the start of the parameter
-		log.debug(" Detecting parameter on {} ", path);
-		String pathRest = path.substring(path.indexOf(":")+1, path.length());
-		// look for the end of the parameter name
-		int nextSlashPosition = (pathRest.indexOf("/") >-1) ? pathRest.indexOf("/")  +1: pathRest.length()+1;
-		int nextDotPosition = (pathRest.indexOf(".") >-1) ? pathRest.indexOf(".") +1 : pathRest.length()+1;
-		int paramEnd = (nextSlashPosition < nextDotPosition) ? nextSlashPosition : nextDotPosition;
-		//Return the parameter name
-		String paramName = pathRest.substring(0, paramEnd-1);
-		log.debug(" ParamName {} ", paramName);
-		return paramName;
-  	}               
 
 }
