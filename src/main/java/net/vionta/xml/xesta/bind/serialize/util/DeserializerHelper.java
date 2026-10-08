@@ -36,9 +36,9 @@ public class DeserializerHelper {
 	public static Serializable getObjectInstance(Class clazz)
 			throws BindingException {
 		try {
-		if(clazz == null ||  clazz.equals(java.lang.Class.class) ) return null;
+		if(clazz == null ||  clazz.equals(Class.class) ) return null;
 		log.debug("Getting instance of "+clazz.getName());
-		 if(clazz.getSuperclass().equals(Number.class)) {
+		 if(Number.class.equals(clazz.getSuperclass())) {
 			if(clazz.equals(Integer.class)) return   Integer.parseInt("0");
 			else if(clazz.equals(Short.class)) return   Short.parseShort("0");
 			else if(clazz.equals(Float.class)) return   Float.parseFloat("0");
@@ -46,6 +46,7 @@ public class DeserializerHelper {
 			else if(clazz.equals(Long.class)) return   Long.parseLong("0");
 			else if(clazz.equals(Byte.class)) return   Byte.parseByte("0");
 		 } 
+		 log.debug("Initializing class : " + clazz.getName());
 			Serializable mainObject =(Serializable) clazz.getDeclaredConstructor().newInstance();
 			return mainObject;
 		 	
@@ -71,7 +72,7 @@ public class DeserializerHelper {
 	 */
 	public static Serializable getObjectInstance(Class clazz, String value)
 			throws BindingException {
-		if(clazz == null ||  clazz.equals(java.lang.Class.class) || value == null ) return null;
+		if(clazz == null ||  clazz.equals(Class.class) || value == null ) return null;
 		log.debug("Getting instance of "+clazz.getName() + " with instance value "+value);
 		try {
 			if(clazz.getSuperclass().equals(Number.class)) {
@@ -104,9 +105,9 @@ public class DeserializerHelper {
 	 * It does not accept nodecollections as a result, since a single class should map to
 	 *  a unique node. 
 	 *  
-	 * @param document
-	 * @param mainMappingExpression
-	 * @return
+	 * @param The Xml element.
+	 * @param mainMappingExpression The mapping expression.
+	 * @return The node related to the class element.
 	 * @throws XPathExpressionException
 	 */
 	public static Node getClassNode(Document document,  String mainMappingExpression, Map<String, String> namespaces)
@@ -133,7 +134,7 @@ public class DeserializerHelper {
 	/**
 	 * Returns a namespace context object with the provided namespaces on 
 	 * the mapping or by hand.
-	 * @param namespaces
+	 * @param namespaces The query namespaces
 	 * @return namespace context object
 	 */
 	public static XPathQueryNSContext extractNamespacesContext(Map<String, String> namespaces) {
