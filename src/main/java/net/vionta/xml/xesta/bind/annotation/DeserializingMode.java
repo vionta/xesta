@@ -1,11 +1,35 @@
 package net.vionta.xml.xesta.bind.annotation;
 
+/**
+ * The options defined for the deserializing 
+ * operation (read Xml to objects).
+ * 
+ * <b>NOTE: Some of this options have not been implemented yet</b>
+ */
 public @interface DeserializingMode {
 
-	public int mode() default WARN_ON_NOT_EXISTING ; 
+	/**
+	 * @return The default deserialize mode.
+	 */
+	int mode() default WARN_ON_NOT_EXISTING ; 
 
-	public static final int FAIL_ON_NOT_EXISTING = 1 ;
-	public static final int WARN_ON_NOT_EXISTING = 2 ;
-	public static final int AVOID_ON_NOT_EXISTING = 3 ;
+	/**
+	 * Fail when an element that exists on the Xml 
+	 * does not exist on the element collection.
+	 */
+	
+	int FAIL_ON_NOT_EXISTING = 1 ;
+	
+	/**
+	 * Warn when an Xml element that exists on the 
+	 * Xml does not exists on the Java collection.
+	 */
+	int WARN_ON_NOT_EXISTING = 2 ;
+	
+	/**
+	 * Do not deserialize elements that 
+	 * does not have a matching java propertiy.
+	 */
+	int AVOID_ON_NOT_EXISTING = 3 ;
 
 }
