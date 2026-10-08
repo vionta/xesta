@@ -16,12 +16,22 @@ import net.vionta.xml.xesta.repository.impl.util.ClasspathFileUtil;
 import net.vionta.xml.xesta.repository.impl.util.DocumentUtils;
 import net.vionta.xml.xesta.repository.impl.util.PathAdjust;
 
+/**
+ * A class path file repository. An object that acts as a 
+ * tool for accessing files based on the configuration.
+ */
 public class ClassPathRepository implements DocumentRepository  {
 	
+	/**
+	 * The file path.
+	 */
 	private String path ;
 	
 	static Logger log  = getLogger(ClassPathRepository.class);
 
+	/**
+	 * Loads the object, from the provided path.
+	 */
 	@Override
 	public <T extends Serializable> T load(T object) throws RetrieveException {
 		try {
@@ -44,6 +54,10 @@ public class ClassPathRepository implements DocumentRepository  {
 		}
 	}
 	
+	/**
+	 * Persist the object from the provided path and document. Consider that 
+	 * not all paths will be open/allowed for modification
+	 */
 	@Override
 	public void persist(Serializable object, Document document) throws PersistException {
 		try {
@@ -64,6 +78,10 @@ public class ClassPathRepository implements DocumentRepository  {
 		}
 	}
 
+	/**
+	 * Persist the object from the provided path. Consider that 
+	 * not all paths will be open/allowed for modification
+	 */
 	public void persist(Serializable object) throws PersistException {
 		try {
 			// Calculate Path.
