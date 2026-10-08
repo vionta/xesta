@@ -4,42 +4,84 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import net.vionta.xml.xesta.bind.analyze.map.Mapping;
 import net.vionta.xml.xesta.bind.serialize.CollectionItem;
-import net.vionta.xml.xesta.bind.serialize.CollectionSerializerHelper;
 import net.vionta.xml.xesta.bind.serialize.Serializer;
 import net.vionta.xml.xesta.exception.ExceptionHelper;
-import net.vionta.xml.xesta.exception.MappingException;
+import net.vionta.xml.xesta.exception.MappingException; 
 
+/**
+ * Utility class to support the implementation of the collection management 
+ * algorithms.
+ */
 public class CollectionDataMerge {
 	
-	private static Logger log  = LoggerFactory.getLogger(Serializer.class);
+//	private static Logger log  = LoggerFactory.getLogger(Serializer.class);
 	
+	/**
+	 * The collection mapping.
+	 */
 	private Mapping mapping ; 
+	
+	/**
+	 * Use the mapping isCollection isMultiple instead.
+	 */
+	@Deprecated 
 	private boolean isMultipleCollection = false; 
+	
+	/**
+	 * Use the mapping data instead.
+	 */
+	@Deprecated
 	private int mappingEstrategy; 
+	
+	/**
+	 * Use the mapping data instead.
+	 */
+	@Deprecated
 	private boolean isDeleteAllowed ;
 	
+	/**
+	 * The class instance tthat holds the object
+	 * part of the data.
+	 */
 	private Class classNode;
+	
 	/**
 	 * Expression that points to the key node or attribute of the 
 	 * element, Used for sorting and comparing elements.
 	 */
 	private String keyNodeExpression;
+	
+	/**
+	 * Name of the key node property/parameter on the java 
+	 * class.
+	 */
 	private String keyNodeParameter;
 	
+	/**
+	 * A boolean indicating if the node could be created with 
+	 * the expression pattern.
+	 */
 	private boolean isCreatePossible = false; 
+	
+	/**
+	 * The XPath expression to create the node.
+	 */
 	private String crateNodeExpression ;
 
+	/**
+	 * The collection object items.
+	 */
 	private ArrayList<CollectionItem> objectItems = new ArrayList<CollectionItem>();
+	
+	/**
+	 * The collection Xml node items.
+	 */
 	private ArrayList<CollectionItem> nodeItems = new ArrayList<CollectionItem>();
 	
 	public Mapping getMapping() {
@@ -90,14 +132,15 @@ public class CollectionDataMerge {
 	public void setCrateNodeExpression(String crateNodeExpression) {
 		this.crateNodeExpression = crateNodeExpression;
 	}
+
 	public ArrayList<CollectionItem> getObjectItems() {
 		return objectItems;
 	}
-	
 
 	public String getKeyNodeParameter() {
 		return keyNodeParameter;
 	}
+	
 	public void setKeyNodeParameter(String keyNodeParameter) {
 		this.keyNodeParameter = keyNodeParameter;
 	}
@@ -110,7 +153,6 @@ public class CollectionDataMerge {
 	 */
 	public void setObjectItems(ArrayList<Object> objectItems, String propertyName) throws MappingException  {
 		for(Object object : objectItems) {
-			
 			CollectionItem cItem = new CollectionItem(object);
 			try {
 				cItem.key  = (String) PropertyUtils.getNestedProperty(object, propertyName);
@@ -120,33 +162,23 @@ public class CollectionDataMerge {
 						"A collection element key could not be obtained.");
 			}	
 			this.objectItems.add(cItem);
-		};
+		}
 	}
 	
 	public void setObjectItemsWithoutKey(ArrayList<Object> objectItems)   {
 		for(Object object : objectItems) {
 			CollectionItem cItem = new CollectionItem(object);
 			this.objectItems.add(cItem);
-		};
+		}
 	}
 	
 	public ArrayList<CollectionItem> getNodeItems() {
 		return nodeItems;
 	}
+
 	public void setNodeItems(ArrayList<CollectionItem> nodeItems) {
 		this.nodeItems = nodeItems;
 	}
-//	public void setNodeItems(NodeList nodes) throws XPathExpressionException {
-//		for (int i = 0; i <= nodes.getLength(); i++) {
-//			Node node = nodes.item(i);
-//			CollectionItem cItem = new CollectionItem();
-//			cItem.position = i; 
-//			cItem.key = CollectionSerializerHelper.getKeyValue(node, this.keyNodeExpression ); 
-//			cItem.keyNodeExpression = this.keyNodeExpression;
-//			cItem.node=node;
-//			this.nodeItems.add(cItem);
-//		}
-//	}
 	
 	/**
 	 * Gets the list of object keys as an array of strings.
