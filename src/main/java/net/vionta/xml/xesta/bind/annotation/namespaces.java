@@ -8,8 +8,16 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PACKAGE})
 //@Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+/**
+ * The namespace list.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface namespaces {
-	 namespace[] value() default {};
+	
+	 /**
+	 * @return An array of namespaces.
+	 */
+	namespace[] value() default {};
+	
 }
